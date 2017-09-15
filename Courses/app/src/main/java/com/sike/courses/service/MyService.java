@@ -52,6 +52,7 @@ public class MyService extends Service {
 
     void schedule() {
         if (tTask != null) tTask.cancel();
+        if(timer == null) timer = new Timer();
         if (interval > 0) {
             tTask = new TimerTask() {
                 public void run() {
@@ -70,9 +71,7 @@ public class MyService extends Service {
     }
 
     public void stopUpdate(){
-        tTask.cancel();
         timer.cancel();
-        tTask = null;
         timer = null;
     }
 
