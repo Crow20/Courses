@@ -42,6 +42,20 @@
             android:exported="false"
             android:process=":notification"/>
 
+        <receiver android:name=".service.widget.MyWidget"
+            android:icon="@android:drawable/star_big_on"
+            android:label="@string/widget_name">
+            <intent-filter>
+                <action
+                    android:name="android.appwidget.action.APPWIDGET_UPDATE">
+                </action>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_metadata">
+            </meta-data>
+        </receiver>
+
         <activity
             android:name=".activity.PrefActivity"
             android:theme="@style/AppTheme.NoActionBar">
