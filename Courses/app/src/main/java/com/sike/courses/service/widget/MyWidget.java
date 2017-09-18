@@ -3,11 +3,15 @@ package com.sike.courses.service.widget;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 
+import com.birbit.android.jobqueue.JobManager;
+import com.sike.courses.CoursesApp;
 import com.sike.courses.R;
+import com.sike.courses.job.http.GetDataJob;
 
 import java.util.Arrays;
 
@@ -19,6 +23,7 @@ public class MyWidget extends AppWidgetProvider {
 
     final String LOG_TAG = "WidgetLogs";
 
+
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
@@ -29,7 +34,9 @@ public class MyWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
+        for (int i : appWidgetIds) {
+            updateWidget(context, appWidgetManager, i);
+        }
         Log.d(LOG_TAG, "onUpdate " + Arrays.toString(appWidgetIds));
     }
 
@@ -43,5 +50,22 @@ public class MyWidget extends AppWidgetProvider {
     public void onDisabled(Context context) {
         super.onDisabled(context);
         Log.d(LOG_TAG, "onDisabled");
+    }
+
+    void updateWidget(Context context, AppWidgetManager appWidgetManager,
+                      int appWidgetId) {
+        RemoteViews rv = new RemoteViews(context.getPackageName(),
+                R.layout.widget);
+
+        setList(rv, context, appWidgetId);
+        appWidgetManager.updateAppWidget(appWidgetId, rv);
+    }
+
+
+
+    void setList(RemoteViews rv, Context context, int appWidgetId) {
+        Intent adapter = new Intent(context, RemoteViewWidgetService.class);
+        adapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        rv.setRemoteAdapter(R.id.lvList, adapter);
     }
 }

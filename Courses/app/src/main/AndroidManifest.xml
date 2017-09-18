@@ -42,6 +42,11 @@
             android:exported="false"
             android:process=":notification"/>
 
+        <service
+            android:name=".service.widget.RemoteViewWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS">
+        </service>
+
         <receiver android:name=".service.widget.MyWidget"
             android:icon="@android:drawable/star_big_on"
             android:label="@string/widget_name">

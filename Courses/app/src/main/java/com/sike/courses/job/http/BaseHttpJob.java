@@ -7,6 +7,7 @@ package com.sike.courses.job.http;
 import com.birbit.android.jobqueue.Params;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.sike.courses.Singleton;
 import com.sike.courses.api.ApiFactory;
 import com.sike.courses.api.ApiService;
 import com.sike.courses.api.response.RequestResult;
@@ -117,8 +118,9 @@ public abstract class BaseHttpJob extends BaseJob {
         return answer;
     }
 
-    protected void saveMemoryCache(HashMap<Object, ArrayList<Course>> list){
-
+    private void saveMemoryCache(HashMap<Object, ArrayList<Course>> list){
+        Singleton singleton = Singleton.getInstance();
+        singleton.list = list;
     }
 
     protected HashMap<Object, ArrayList<Course>>  getMemoryCache(){
