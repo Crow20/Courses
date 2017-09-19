@@ -3,21 +3,18 @@ package com.sike.courses.service.widget;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.sike.courses.R;
 import com.sike.courses.Singleton;
-import com.sike.courses.api.response.RequestResult;
-import com.sike.courses.event.httpEvent.BaseHttpEvent;
 import com.sike.courses.mvp.model.Course;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by agritsenko on 15.09.2017.
@@ -57,13 +54,26 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public RemoteViews getViewAt(int position) {
+        Log.d("WidgetFactory", "row="+position);
         RemoteViews rView = new RemoteViews(context.getPackageName(),
-                R.layout.item_small_width);
-        rView.setTextViewText(R.id.col1, data.get(position).getSubname());
-        rView.setTextViewText(R.id.col2, data.get(position).getName());
-        rView.setTextViewText(R.id.col3, data.get(position).getDate());
-        rView.setTextViewText(R.id.col4, data.get(position).getValue1());
-        rView.setTextViewText(R.id.col5, data.get(position).getValue2());
+                R.layout.widget_item);
+//        if(data.get(position).getSubname().equals())
+//        if(data.size() > 24) data.removeAll(data.subList(23, data.size()-1));
+        if(!data.get(position).isSubnameNull(data.get(position))){
+            if(data.get(position).getName().equals("USD")){
+                rView.setTextViewText(R.id.col1, data.get(position).getSubname());
+            }
+            rView.setTextViewText(R.id.col2, data.get(position).getName());
+            rView.setTextViewText(R.id.col3, data.get(position).getDate());
+            rView.setTextViewText(R.id.col4, data.get(position).getValue1());
+            rView.setTextViewText(R.id.col5, data.get(position).getValue2());
+        }else {
+            rView.setTextViewText(R.id.col1, data.get(position).getName());
+            rView.setTextViewText(R.id.col3, data.get(position).getDate());
+            rView.setTextViewText(R.id.col4, data.get(position).getValue1());
+            rView.setTextViewText(R.id.col5, data.get(position).getValue2());
+        }
+
         return rView;
     }
 
@@ -85,14 +95,12 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
             data.addAll(data.size(), list.get("currency"));
             data.addAll(data.size(), list.get("indices"));
         }
-
-        //onMessageEvent(EventBus.getDefault().getStickyEvent(BaseHttpEvent.class));
     }
 
 
 
     @Override
     public void onDestroy() {
-
+        data.clear();
     }
 }

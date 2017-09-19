@@ -15,6 +15,7 @@ public final class Singleton {
     public HashMap<Object, ArrayList<Course>> list;
 
     public static Singleton getInstance() {
+
         return ourInstance;
     }
 

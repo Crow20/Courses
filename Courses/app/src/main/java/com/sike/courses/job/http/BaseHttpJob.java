@@ -21,7 +21,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Timer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.ResponseBody;
@@ -120,7 +119,12 @@ public abstract class BaseHttpJob extends BaseJob {
 
     private void saveMemoryCache(HashMap<Object, ArrayList<Course>> list){
         Singleton singleton = Singleton.getInstance();
-        singleton.list = list;
+        if(singleton.list == null){
+            singleton.list = list;
+        }else if(singleton.list != null && singleton.list.size() != 0){
+            singleton.list.clear();
+            singleton.list = list;
+        }
     }
 
     protected HashMap<Object, ArrayList<Course>>  getMemoryCache(){
