@@ -70,11 +70,6 @@ public class MyService extends Service {
         schedule();
     }
 
-    public void stopUpdate(){
-        timer.cancel();
-        timer = null;
-    }
-
     public IBinder onBind(Intent arg0) {
         Log.d(LOG_TAG, "MyService onBind");
         return binder;
@@ -89,6 +84,7 @@ public class MyService extends Service {
     @Override
     public void onDestroy() {
         Log.d(LOG_TAG, "Уничтожился");
+        timer.cancel();
         super.onDestroy();
     }
 

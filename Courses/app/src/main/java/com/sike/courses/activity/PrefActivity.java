@@ -41,7 +41,7 @@ public class PrefActivity extends PreferenceActivity implements SharedPreference
         sConn = new ServiceConnection() {
 
             public void onServiceConnected(ComponentName name, IBinder binder) {
-                Log.d(LOG_TAG, "PrefActivity onServiceConnected params( "+"update = "+sp.getBoolean("autoupdate", false)+" time = "+sp.getString("timeupdate", "1")+" )");
+                Log.d(LOG_TAG, "PrefActivity onServiceConnected");
                 myService = ((MyService.MyBinder) binder).getService();
                 bound = true;
             }
@@ -57,19 +57,17 @@ public class PrefActivity extends PreferenceActivity implements SharedPreference
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(key.equals("autoupdate")){
             if(sp.getBoolean("autoupdate", false)){
+                Log.d(LOG_TAG, "Service autoupdate=true");
                 startService(intent);
                 if(myService != null){
                     myService.setInterval(Integer.valueOf(sp.getString("timeupdate", "1")));
                 }
             }else{
-                myService.stopUpdate();
+                Log.d(LOG_TAG, "Service autoupdate=false");
                 sp.edit().putString("timeupdate", "1").apply();
             }
-        }else if(!(sp.getString("timeupdate", "1").equals("1"))){
+        }else if(!bound){
             myService.setInterval(Integer.valueOf(sp.getString("timeupdate", "1")));
-            startService(intent);
-        }else {
-            startService(intent);
         }
     }
 
@@ -83,6 +81,9 @@ public class PrefActivity extends PreferenceActivity implements SharedPreference
     protected void onStop() {
         super.onStop();
         if (!bound) return;
+        if(!sp.getBoolean("autoupdate", false)){
+            stopService(intent);
+        }
         unbindService(sConn);
         bound = false;
     }
